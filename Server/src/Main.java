@@ -2,17 +2,17 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        ServerConnection s = new ServerConnection(512);
-        Scanner keyboard = new Scanner(System.in);
+        Conexao s = new Conexao(300);
+        Scanner in = new Scanner(System.in);
         s.abre();
-        System.out.println("Connection started");
+        System.out.println("Conexao iniciada");
         while(true) {
-            System.out.println("Write 0 to receive a file");
-            if (keyboard.nextInt()!=0) break;
+            System.out.println("Digite R para receber um arquivo");
+            if (!in.nextLine().equalsIgnoreCase("R")) break;
             s.recebeArquivo();
         }
-        keyboard.close();
+        in.close();
         s.fecha();
-        System.out.println("Connection ended");
+        System.out.println("Conexao encerrada");
     }
 }

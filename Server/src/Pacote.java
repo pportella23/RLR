@@ -1,6 +1,6 @@
 import java.util.zip.CRC32;
 
-public class PacketObject {
+public class Pacote {
     private int num;
     private int numPacotes;
     private String nome;
@@ -8,7 +8,7 @@ public class PacketObject {
     private int tamPacote;
     private String crc;
 
-    public PacketObject(int num, String nome, int tamPacote) {
+    public Pacote(int num, String nome, int tamPacote) {
         this.nome = nome;
         this.num = num;
         this.tamPacote = tamPacote;

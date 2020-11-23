@@ -25,30 +25,66 @@ public class Conexao {
       Arquivo arquivo = new Arquivo(fileName, tamPacote);
 
       int confirmado = 0;
+      int congestionAvoidance = 7;
+      int auxCongestion = 5;
+      int contCongestion = 0;
       int enviando = 0;
       int enviaQtd = 1;
       while (confirmado < arquivo.getTamPacote()) {
 
          if (enviaQtd > 0 && enviando < arquivo.getTamPacote()) {
             enviaPacote(arquivo.getItensPacotes(enviando));
-            System.out.println("Pacote " + enviando + " enviado ->");
+            System.out.println("\nPacote " + enviando + " enviado ->");
             enviando++;
          }
 
          if (enviaQtd == 2 && enviando < arquivo.getTamPacote()) {
             enviaPacote(arquivo.getItensPacotes(enviando));
-            System.out.println("Pacote " + enviando + " enviado ->");
+            System.out.println("\nPacote " + enviando + " enviado ->");
             enviando++;
          }
 
          if (recebePacote(confirmado)) {
-            System.out.println("Pacote " + confirmado + " confirmado");
+            System.out.println("\nPacote " + confirmado + " confirmado ✓");
             confirmado++;
-            enviaQtd = 2;
+            
+            // Slow Start
+            if (confirmado < 4) {
+               enviaQtd = 2;
+            }
 
+            // Congestion Avoidance
+            else {
+
+               if (confirmado == 4){   
+                  System.out.println("\nCongestion Avoidance iniciado.");
+               }
+
+               if (confirmado == congestionAvoidance){
+                  //System.out.println("\n" + congestionAvoidance);
+                  enviaQtd = 2;
+                  congestionAvoidance += auxCongestion;
+                  auxCongestion++;
+                  contCongestion++;
+               }
+               else {
+                  enviaQtd = 1;
+               }
+               
+            }
+            
          } else {
             enviando = confirmado;
-            enviaQtd = 1;
+            
+            // TESTE
+            if (confirmado < 4) {
+               enviaQtd = 1;
+            }
+            else {
+               for (int i=0; i < contCongestion; i++){
+                  
+               }
+            }
          }
       }
 
@@ -77,10 +113,12 @@ public class Conexao {
             if (numeroRecebido - 1 == confirmado)
                return true;
          } catch (SocketTimeoutException e) {
+            // Volta pro mesmo pacote
             System.out.println("Limite de tempo, procurando por " + confirmado + " novamente");
             return false;
          }
       }
+      // O tamanho do congestion avoidance cai pela metade
       System.out.println("Engano, procurando por " + confirmado + " novamente");
       return false;
 
@@ -91,5 +129,4 @@ public class Conexao {
       DatagramPacket enviaPacote = new DatagramPacket(saida, saida.length, IP, 1971);
       cliente.send(enviaPacote);
    }
-
 }

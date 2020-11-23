@@ -1,14 +1,14 @@
 import java.io.*;
 import java.util.*;
 
-public class ServerFile {
+public class Arquivo {
     private String nome;
     private String conteudo;
 
-    private ArrayList<PacketObject> pacotes;
+    private ArrayList<Pacote> pacotes;
 
-    public ServerFile() throws Exception {
-        pacotes = new ArrayList<PacketObject>();
+    public Arquivo() throws Exception {
+        pacotes = new ArrayList<Pacote>();
     }
 
     public String getNome() {
@@ -17,12 +17,12 @@ public class ServerFile {
 
     private void montarPedacos() {
         conteudo = "";
-        for (PacketObject packetObject : pacotes) {
-            conteudo = conteudo + packetObject.getConteudo();
+        for (Pacote Pacote : pacotes) {
+            conteudo = conteudo + Pacote.getConteudo();
         }
     }
 
-    public PacketObject getPacote(byte[] segment) {
+    public Pacote getPacote(byte[] segment) {
         String numero = "";
         String tamanho = "";
         String nomePacote = "";
@@ -46,7 +46,7 @@ public class ServerFile {
         for (i++; segment.length > i && segment[i] != 0; i++)
             conteudoPacote = conteudoPacote + (char) segment[i];
 
-        PacketObject pacote = new PacketObject(Integer.parseInt(numero), nomePacote, segment.length);
+        Pacote pacote = new Pacote(Integer.parseInt(numero), nomePacote, segment.length);
         pacote.setNumeroPacotes(Integer.parseInt(tamanho));
         pacote.setConteudo(conteudoPacote);
         pacote.setCRC(crc);
@@ -55,7 +55,7 @@ public class ServerFile {
         return pacote;
     }
 
-    private boolean testeCRC(PacketObject pacote) {
+    private boolean testeCRC(Pacote pacote) {
         long crcRecebido = Long.parseLong(pacote.getCRC());
         long crcCriado = pacote.geradorCRC(pacote.getConteudo());
 
@@ -65,16 +65,16 @@ public class ServerFile {
         return false;
     }
 
-    public boolean addPedaco(PacketObject pacote) {
+    public boolean addPedaco(Pacote pacote) {
         if (!testeCRC(pacote)) {
-            System.out.println("CRC incorrect");
+            System.out.println("CRC incorreto!");
             return false;
         }
         if (pacote.getNum() == pacotes.size()) {
             pacotes.add(pacote);
-            System.out.println("");
+            System.out.println("Pacote adicionado");
         } else {
-            System.out.println("Segmento already added");
+            System.out.println("Este pacote já foi adicionado");
         }
 
         return true;
@@ -91,7 +91,7 @@ public class ServerFile {
 
     public String getPacotes() {
         String teste = "";
-        for (PacketObject pacote : pacotes) {
+        for (Pacote pacote : pacotes) {
             teste = teste + pacote.getConteudo();
         }
         return teste;
