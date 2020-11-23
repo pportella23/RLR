@@ -22,9 +22,12 @@ public class Pacote {
 
     private String formataCRC(long crc) {
         String converted = Long.toString(crc);
+        
+
         for (int i = converted.length(); i < 10; i++) {
             converted = "0" + converted;
         }
+        
         return converted;
     }
 
