@@ -6,10 +6,11 @@ public class Conexao {
 
       private DatagramSocket servidor;
       private InetAddress IP;
-      private int tamPacote;
 
-      public Conexao(int tamPacote) throws UnknownHostException {
-            this.tamPacote = tamPacote;
+      // Tamanho dos pacotes enviados
+      private int tamPacote = 300;
+
+      public Conexao() throws UnknownHostException {
             IP = InetAddress.getByName("localhost");
       }
 

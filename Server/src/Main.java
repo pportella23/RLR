@@ -2,9 +2,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Conexao s = new Conexao(300);
+
         Scanner in = new Scanner(System.in);
+
+        Conexao s = new Conexao();
         s.abre();
+
         System.out.println("Conexao iniciada");
         while(true) {
             System.out.println("Digite R para receber um arquivo");

@@ -2,9 +2,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Conexao c = new Conexao(300);
+
         Scanner in = new Scanner(System.in);
+
+        Conexao c = new Conexao();
         c.abre();
+
         System.out.println("Conexao iniciada");
         while(true) {
             System.out.println("Digite E para enviar um arquivo");

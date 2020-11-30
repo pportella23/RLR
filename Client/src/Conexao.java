@@ -1,14 +1,18 @@
 import java.io.*;
 import java.net.*;
 
+// Para fazer o arredondamento do congestion avoidance
+import java.lang.Math;
+
 public class Conexao {
 
    private DatagramSocket cliente;
    private InetAddress IP;
-   private int tamPacote;
 
-   public Conexao(int tamPacote) throws UnknownHostException {
-      this.tamPacote = tamPacote;
+   // Tamanho dos pacotes enviados
+   private int tamPacote = 300;
+
+   public Conexao() throws UnknownHostException {
       IP = InetAddress.getByName("localhost");
    }
 
@@ -27,6 +31,7 @@ public class Conexao {
       int confirmado = 0;
       int congestionAvoidance = 7;
       int auxCongestion = 5;
+      int contCongestion = 0;
       boolean boolCongestion = false;
       int enviando = 0;
       int enviaQtd = 1;
@@ -44,13 +49,22 @@ public class Conexao {
             enviando++;
          }
 
-         if (recebePacote(confirmado) == 1) {
+         int resposta = recebePacote(confirmado);
+
+         if (resposta == 1) {
             System.out.println("\nPacote " + confirmado + " confirmado ✓");
             confirmado++;
             
             // Slow Start
-            if (confirmado < 4 && !boolCongestion) {
+            if (!boolCongestion) {
+               System.out.println("Slow start... :" + contCongestion);
                enviaQtd = 2;
+
+               if (contCongestion >= 2) {
+                  boolCongestion = true;
+               }
+
+               contCongestion++;
             }
 
             // Congestion Avoidance
@@ -67,31 +81,44 @@ public class Conexao {
                   enviaQtd = 2;
                   congestionAvoidance += auxCongestion;
                   auxCongestion++;
+                  contCongestion++;
                }
 
                // Está nos primeiros nodos da geração
                else {
                   enviaQtd = 1;
                }
-               
+
             }
             
          } else {
 
             // Time out
-            if (recebePacote(confirmado) == 2) {
+            if (resposta == 2) {
+               System.out.println("\nTime Out recebido... retransmitindo pacote.");
                enviando = confirmado;
-               enviaQtd = 1;   
+               enviaQtd = 1;
+               boolCongestion = false;
+               
+               congestionAvoidance = 7;
+               auxCongestion = 5;
+               contCongestion = 0;
             }
             
             // 3 ACKs seguidos
-            else if (recebePacote(confirmado) == 3) {
+            // No caso da recepção de 3 ACKs duplicados, ocorrerá uma retransmissão imediata somente do pacote
+            // identificado pelo ACK, o tamanho da janela de congestionamento cai pela metade
+            // e a técnica de Congestion Avoidance é continuada.
+            else if (resposta == 3) {
+               System.out.println("\n3 ACKs seguidos, dropando tamanho da janela (" + congestionAvoidance+ ") pela metade.");
                enviando = confirmado;
                enviaQtd = 1;
+               congestionAvoidance = (int) Math.round(congestionAvoidance / 2.0);
+               System.out.println("Tamanho da janela atual: " + congestionAvoidance);
             }
          }
       }
-      
+
       System.out.println("Arquivo " + fileName + " enviado ->");
 
       terminaTransmissao();
