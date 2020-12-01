@@ -67,6 +67,10 @@ public class Pacote {
         return num;
     }
 
+    public int getTamPacote(){
+        return tamPacote;
+    }
+
     private String formataNumero(int unformatted) {
         if (unformatted < 10)
             return "00" + unformatted;

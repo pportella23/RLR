@@ -83,7 +83,7 @@ public class Arquivo {
 
     public void salva() throws Exception {
         montarPedacos();
-        File arquivo = new File("../out_files/" + nome);
+        File arquivo = new File("../arq_saida/" + nome);
         FileOutputStream fileWritter = new FileOutputStream(arquivo);
         fileWritter.write(conteudo.getBytes());
         fileWritter.close();

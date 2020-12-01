@@ -15,7 +15,7 @@ public class Conexao {
       }
 
       public void abre() throws SocketException, UnknownHostException {
-            servidor = new DatagramSocket(1971);
+            servidor = new DatagramSocket(5554);
             servidor.setSoTimeout(10000);
       }
 
@@ -41,14 +41,14 @@ public class Conexao {
                         return;
                   }
 
-
                   System.out.println("\nPacote" + pacoteRecebido.getNum() + " recebido ✓");
+                  //System.out.println("\nPacote" + pacoteRecebido.getNum() + " tamanho: " + pacoteRecebido.getTamPacote());
+
                   if (recebido == pacoteRecebido.getNum())
                         cont++;
                   else
                         recebido = pacoteRecebido.getNum();
                   if (recebido == aux) {
-
                         arq.addPedaco(pacoteRecebido);
                         aux++;
                   }
@@ -102,7 +102,7 @@ public class Conexao {
             else
                   saida = ("" + number).getBytes();
 
-            DatagramPacket enviarPacote = new DatagramPacket(saida, saida.length, IP, 1972);
+            DatagramPacket enviarPacote = new DatagramPacket(saida, saida.length, IP, 5555);
             servidor.send(enviarPacote);
       }
 

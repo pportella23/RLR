@@ -17,7 +17,7 @@ public class Conexao {
    }
 
    public void abre() throws SocketException {
-      cliente = new DatagramSocket(1972);
+      cliente = new DatagramSocket(5555);
       cliente.setSoTimeout(1000);
    }
 
@@ -127,7 +127,7 @@ public class Conexao {
 
    private void terminaTransmissao() throws IOException {
       byte[] saida = "end".getBytes();
-      DatagramPacket enviaPacote = new DatagramPacket(saida, saida.length, IP, 1971);
+      DatagramPacket enviaPacote = new DatagramPacket(saida, saida.length, IP, 5554);
       cliente.send(enviaPacote);
    }
 
@@ -155,7 +155,7 @@ public class Conexao {
 
    private void enviaPacote(String fileText) throws IOException {
       byte[] saida = fileText.getBytes();
-      DatagramPacket enviaPacote = new DatagramPacket(saida, saida.length, IP, 1971);
+      DatagramPacket enviaPacote = new DatagramPacket(saida, saida.length, IP, 5554);
       cliente.send(enviaPacote);
    }
 }

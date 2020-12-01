@@ -13,11 +13,11 @@ public class Arquivo {
 
     private void abre(String nome) throws Exception {
         File arq;
-        arq = new File("../in_files/" + nome);
+        arq = new File("../arq_entrada/" + nome);
         this.nome = arq.getName();
         InputStream input = null;
         input = new FileInputStream(arq);
-        byte[] buffer = new byte[10000];
+        byte[] buffer = new byte[40000];
         input.read(buffer);
         input.close();
         conteudo = new String(formata(buffer));
